@@ -1,0 +1,40 @@
+From 7e915b35d1fc3975ba5d0520a81c1eb834374787 Mon Sep 17 00:00:00 2001
+From: mstickel <michael.stickel@baslerweb.com>
+Date: Thu, 8 Oct 2020 18:36:21 +0200
+Subject: [PATCH 15/34] imx8mp-evk-basler.dts: disable unused isi and isp
+ devices
+
+---
+ arch/arm64/boot/dts/freescale/imx8mp-evk-basler.dts | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk-basler.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk-basler.dts
+index a4a71af8082b..848dc49b73ff 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-evk-basler.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-evk-basler.dts
+@@ -56,10 +56,22 @@
+ 	status = "disabled";
+ };
+ 
++&isi_1 {
++	status = "disabled";
++};
++
+ &isp_0 {
+ 	status = "okay";
+ };
+ 
++&isp_1 {
++	status = "disabled";
++};
++
+ &dewarp_0 {
+ 	status = "okay";
+ };
++
++&dewarp_1 {
++	status = "disabled";
++};
+-- 
+2.30.0
+

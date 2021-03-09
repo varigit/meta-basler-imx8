@@ -1,0 +1,86 @@
+From 27fbdec5fb5e6d6bc3bdc86c99e542e986b68b08 Mon Sep 17 00:00:00 2001
+From: hexing <Xing.He@verisilicon.com>
+Date: Thu, 24 Dec 2020 17:27:42 +0800
+Subject: [PATCH 07/34] fix csi dewarp contrl raw format error
+
+---
+ .../staging/media/imx/imx8-mipi-csi2-sam.c    | 49 ++++++++++++++++++-
+ 1 file changed, 48 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/staging/media/imx/imx8-mipi-csi2-sam.c b/drivers/staging/media/imx/imx8-mipi-csi2-sam.c
+index d043e56ee7d2..5632780459d1 100644
+--- a/drivers/staging/media/imx/imx8-mipi-csi2-sam.c
++++ b/drivers/staging/media/imx/imx8-mipi-csi2-sam.c
+@@ -646,6 +646,52 @@ static int mipi_csis_phy_init(struct csi_state *state)
+ 	return 0;
+ }
+ 
++static int mipi_csis_dewarp_control(struct csi_state *state)
++{
++	unsigned int isp_dewarp_control_val;
++	unsigned int fmt_offset = 3;
++	regmap_read(state->mix_gpr, 0x138, &isp_dewarp_control_val);
++	if (isp_dewarp_control_val == 0)
++	{
++		isp_dewarp_control_val = 0x8d8360;
++		regmap_write(state->mix_gpr, 0x138, isp_dewarp_control_val);
++		return 0;
++	}
++
++	if(state->csis_fmt == NULL)
++	{
++		return -ENODEV;
++	}
++
++	if (state->index == 0)
++	{
++		fmt_offset = 3;
++	}else
++	{
++		fmt_offset = 13;
++	}
++
++	switch(state->csis_fmt->fmt_reg)
++	{
++		case MIPI_CSIS_ISPCFG_FMT_RAW8:
++			isp_dewarp_control_val &= ~(0x3f << fmt_offset);
++			isp_dewarp_control_val |= (0x2a << fmt_offset); 
++			break;
++		case MIPI_CSIS_ISPCFG_FMT_RAW10:
++			isp_dewarp_control_val &= ~(0x3f << fmt_offset);
++			isp_dewarp_control_val |= (0x2b << fmt_offset); 
++			break;
++		case MIPI_CSIS_ISPCFG_FMT_RAW12:
++			isp_dewarp_control_val &= ~(0x3f << fmt_offset);
++			isp_dewarp_control_val |= (0x2c << fmt_offset); 
++			break;
++		default:
++			return 0;
++	}
++	regmap_write(state->mix_gpr, 0x138, isp_dewarp_control_val);
++	return 0;
++}
++
+ static void mipi_csis_phy_reset_mx8mn(struct csi_state *state)
+ {
+ 	struct reset_control *reset = state->mipi_reset;
+@@ -658,7 +704,7 @@ static void mipi_csis_phy_reset_mx8mn(struct csi_state *state)
+ 
+ 	/* temporary place */
+ 	if (state->mix_gpr)
+-		regmap_write(state->mix_gpr, 0x138, 0x8d8360);
++		mipi_csis_dewarp_control(state);
+ }
+ 
+ static void mipi_csis_system_enable(struct csi_state *state, int on)
+@@ -1261,6 +1307,7 @@ static int csis_s_fmt(struct v4l2_subdev *sd, struct csi_sam_format *fmt)
+ 	state->format.height = fmt->height;
+ 	disp_mix_gasket_config(state);
+ 	mipi_csis_set_params(state);
++	mipi_csis_dewarp_control(state);
+ 	return 0;
+ }
+ 
+-- 
+2.30.0
+

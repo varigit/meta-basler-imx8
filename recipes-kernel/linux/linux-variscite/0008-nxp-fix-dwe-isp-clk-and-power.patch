@@ -1,0 +1,72 @@
+From 35546d0a8d5c4cd2f6483185569e927a45e3e824 Mon Sep 17 00:00:00 2001
+From: hexing <Xing.He@verisilicon.com>
+Date: Thu, 24 Dec 2020 20:41:57 +0800
+Subject: [PATCH 08/34] nxp fix dwe&isp clk and power
+
+---
+ arch/arm64/boot/dts/freescale/imx8mp.dtsi | 28 +++++++++++++++++++----
+ 1 file changed, 24 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+index 6b0a9c50fb34..6c41b3010db9 100755
+--- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+@@ -1810,8 +1810,10 @@
+ 					compatible = "fsl,imx8mp-isp";
+ 					reg = <0x32e10000 0x10000>;
+ 					interrupts = <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
+-					clocks = <&clk IMX8MP_CLK_MEDIA_ISP_SRC>;
+-					clock-names = "isp_root";
++					clocks = <&clk IMX8MP_CLK_MEDIA_ISP_SRC>,
++						 <&clk IMX8MP_CLK_MEDIA_AXI>,
++						 <&clk IMX8MP_CLK_MEDIA_APB>;
++					clock-names = "core", "axi", "ahb";
+ 					assigned-clocks = <&clk IMX8MP_CLK_MEDIA_ISP_SRC>;
+ 					assigned-clock-parents = <&clk IMX8MP_SYS_PLL2_500M>;
+ 					assigned-clock-rates = <500000000>;
+@@ -1824,8 +1826,10 @@
+ 					compatible = "fsl,imx8mp-isp";
+ 					reg = <0x32e20000 0x10000>;
+ 					interrupts = <GIC_SPI 75 IRQ_TYPE_LEVEL_HIGH>;
+-					clocks = <&clk IMX8MP_CLK_MEDIA_ISP_SRC>;
+-					clock-names = "isp_root";
++					clocks = <&clk IMX8MP_CLK_MEDIA_ISP_SRC>,
++						 <&clk IMX8MP_CLK_MEDIA_AXI>,
++						 <&clk IMX8MP_CLK_MEDIA_APB>;
++					clock-names = "core", "axi", "ahb";
+ 					assigned-clocks = <&clk IMX8MP_CLK_MEDIA_ISP_SRC>;
+ 					assigned-clock-parents = <&clk IMX8MP_SYS_PLL2_500M>;
+ 					assigned-clock-rates = <500000000>;
+@@ -1839,6 +1843,14 @@
+ 					compatible = "fsl,imx8mp-dwe";
+ 					reg = <0x32e30000 0x10000>;
+ 					interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
++					clocks = <&clk IMX8MP_CLK_MEDIA_AXI>,
++						 <&clk IMX8MP_CLK_MEDIA_AXI>,
++						 <&clk IMX8MP_CLK_MEDIA_APB>;
++					clock-names = "core", "axi", "ahb";
++					assigned-clocks = <&clk IMX8MP_CLK_MEDIA_AXI_ROOT>,
++							  <&clk IMX8MP_CLK_MEDIA_APB_ROOT>;
++					assigned-clock-rates = <500000000>, <200000000>;
++					power-domains = <&ispdwp_pd>;
+ 					id = <0>;
+ 					status = "disabled";
+ 				};
+@@ -1847,6 +1859,14 @@
+ 					compatible = "fsl,imx8mp-dwe";
+ 					reg = <0x32e30000 0x10000>;
+ 					interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
++					clocks = <&clk IMX8MP_CLK_MEDIA_AXI>,
++						 <&clk IMX8MP_CLK_MEDIA_AXI>,
++						 <&clk IMX8MP_CLK_MEDIA_APB>;
++					clock-names = "core", "axi", "ahb";
++					assigned-clocks = <&clk IMX8MP_CLK_MEDIA_AXI_ROOT>,
++							  <&clk IMX8MP_CLK_MEDIA_APB_ROOT>;
++					assigned-clock-rates = <500000000>, <200000000>;
++					power-domains = <&ispdwp_pd>;
+ 					id = <1>;
+ 					status = "disabled";
+ 				};
+-- 
+2.30.0
+

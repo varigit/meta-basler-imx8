@@ -1,0 +1,143 @@
+From 0986c40c1096063ed347e21f2eabaf5856684069 Mon Sep 17 00:00:00 2001
+From: Chao Fang <chao.fang@verisilicon.com>
+Date: Mon, 23 Nov 2020 18:53:19 +0800
+Subject: [PATCH 02/34] add imx8mp-evk-basler-ov2775.dts for dual cam
+
+Change-Id: I6a7c2a2bd426a87e2187614f3b3a1b4642fcedcd
+---
+ .../freescale/imx8mp-evk-basler-ov2775.dts    | 123 ++++++++++++++++++
+ 1 file changed, 123 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-evk-basler-ov2775.dts
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk-basler-ov2775.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk-basler-ov2775.dts
+new file mode 100644
+index 000000000000..863215441aba
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mp-evk-basler-ov2775.dts
+@@ -0,0 +1,123 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2020 NXP
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version 2
++ * of the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ */
++
++#include "imx8mp-evk.dts"
++
++&iomuxc {
++	pinctrl_csi1_pwn: csi1_pwn_grp {
++		fsl,pins = <
++			MX8MP_IOMUXC_SAI1_RXC__GPIO4_IO01	0x19
++		>;
++	};
++
++	pinctrl_csi1_rst: csi1_rst_grp {
++		fsl,pins = <
++			MX8MP_IOMUXC_SAI1_RXFS__GPIO4_IO00	0x19
++		>;
++	};
++};
++
++&i2c2 {
++	/delete-node/ov5640_mipi@3c;
++
++	basler_camera@36 {
++		compatible = "basler,basler-camera-vvcam", "basler-camera-vvcam";
++		reg = <0x36>;
++		csi_id = <0x00>;
++		status = "okay";
++
++		port {
++			basler_ep_0: endpoint {
++				data-lanes = <1 2 3 4>;
++				clock-lanes = <0>;
++				link-frequencies = /bits/ 64 <248000000>;
++				remote-endpoint = <&mipi_csi0_ep>;
++			};
++		};
++	};
++};
++
++&i2c3 {
++	/delete-node/ov5640_mipi@3c;
++
++	ov2775_1: ov2775_mipi@36 {
++		compatible = "ovti,ov2775";
++		reg = <0x36>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_csi1_pwn>, <&pinctrl_csi1_rst>, <&pinctrl_csi_mclk>;
++		clocks = <&clk IMX8MP_CLK_IPP_DO_CLKO2>;
++		clock-names = "csi_mclk";
++		assigned-clocks = <&clk IMX8MP_CLK_IPP_DO_CLKO2>;
++		assigned-clock-parents = <&clk IMX8MP_CLK_24M>;
++		assigned-clock-rates = <24000000>;
++		csi_id = <1>;
++		mclk = <24000000>;
++		mclk_source = <0>;
++		status = "okay";
++
++		port {
++			ov2775_mipi_1_ep: endpoint {
++				data-lanes = <1 2 3 4>;
++				clock-lanes = <0>;
++				remote-endpoint = <&mipi_csi1_ep>;
++			};
++		};
++	};
++
++};
++
++&mipi_csi_0 {
++	status = "okay";
++
++	port@0 {
++		mipi_csi0_ep: endpoint {
++			remote-endpoint = <&basler_ep_0>;
++			data-lanes = <4>;
++			csis-hs-settle = <16>;
++		};
++	};
++};
++
++&mipi_csi_1 {
++	status = "okay";
++
++	port@1 {
++		mipi_csi1_ep: endpoint {
++			remote-endpoint = <&ov2775_mipi_1_ep>;
++			data-lanes = <4>;
++			csis-hs-settle = <16>;
++		};
++	};
++};
++
++&isi_0 {
++	status = "disabled";
++};
++
++&isi_1 {
++	status = "disabled";
++};
++
++&isp_0 {
++	status = "okay";
++};
++
++&isp_1 {
++	status = "okay";
++};
++
++&dewarp {
++	status = "okay";
++};
+-- 
+2.30.0
+

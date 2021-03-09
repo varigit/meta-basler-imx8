@@ -1,0 +1,30 @@
+From a716e65d9ea88dfe627e197a8b41e456972067a4 Mon Sep 17 00:00:00 2001
+From: baochao <Chao.Bao@verisilicon.com>
+Date: Fri, 11 Dec 2020 15:09:07 +0800
+Subject: [PATCH 06/34] enable dual dewarp for dual ov2775
+
+---
+ arch/arm64/boot/dts/freescale/imx8mp-evk-dual-ov2775.dts | 4 ++++
+ 1 file changed, 4 insertions(+)
+ mode change 100644 => 100755 arch/arm64/boot/dts/freescale/imx8mp-evk-dual-ov2775.dts
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk-dual-ov2775.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk-dual-ov2775.dts
+old mode 100644
+new mode 100755
+index 3b85c8b0b6ee..45a290b38113
+--- a/arch/arm64/boot/dts/freescale/imx8mp-evk-dual-ov2775.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-evk-dual-ov2775.dts
+@@ -101,6 +101,10 @@
+ 	status = "okay";
+ };
+ 
++&dewarp_1 {
++	status = "okay";
++};
++
+ &mipi_csi_0 {
+ 	status = "okay";
+ 
+-- 
+2.30.0
+

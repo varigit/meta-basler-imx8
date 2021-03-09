@@ -1,0 +1,31 @@
+From 8d67cf2b2196f1d6639b1c8b141453e85345ef4a Mon Sep 17 00:00:00 2001
+From: "Guoniu.zhou" <guoniu.zhou@nxp.com>
+Date: Mon, 16 Nov 2020 14:12:39 +0800
+Subject: [PATCH 01/34] LF-2474: media: samsung csi: fix string overflow issue
+
+Coverity Issue: 10436670, 10893372, 10436673, fix string overflow issue.
+The length of v4l2_capability structure driver member is 16, but the length
+of "csi_samsung_subdev" is 18, when assign it to driver member, it will
+occur string overflow issue.
+
+Signed-off-by: Guoniu.zhou <guoniu.zhou@nxp.com>
+---
+ drivers/staging/media/imx/imx8-mipi-csi2-sam.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/media/imx/imx8-mipi-csi2-sam.c b/drivers/staging/media/imx/imx8-mipi-csi2-sam.c
+index 4d4896779753..d043e56ee7d2 100644
+--- a/drivers/staging/media/imx/imx8-mipi-csi2-sam.c
++++ b/drivers/staging/media/imx/imx8-mipi-csi2-sam.c
+@@ -1277,7 +1277,7 @@ static int csis_ioc_qcap(struct v4l2_subdev *dev, void *args)
+ {
+ 	struct csi_state *state = mipi_sd_to_csi_state(dev);
+ 	struct v4l2_capability *cap = (struct v4l2_capability *)args;
+-	strcpy((char *)cap->driver, "csi_samsung_subdev");
++	strlcpy((char *)cap->driver, "csi_sam_subdev", sizeof(cap->driver));
+ 	cap->bus_info[0] = state->index;
+ 	return 0;
+ }
+-- 
+2.30.0
+

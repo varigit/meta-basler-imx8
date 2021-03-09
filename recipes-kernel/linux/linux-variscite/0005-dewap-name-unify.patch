@@ -1,0 +1,107 @@
+From 7d9bec1364e8c743f1fcdcbb9d555d328d9f9d2f Mon Sep 17 00:00:00 2001
+From: hexing <Xing.He@verisilicon.com>
+Date: Thu, 10 Dec 2020 14:31:41 +0800
+Subject: [PATCH 05/34] dewap name unify
+
+---
+ arch/arm64/boot/dts/freescale/imx8mp-evk-basler-ov2775.dts | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mp-evk-basler-ov5640.dts | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mp-evk-basler.dts        | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mp-evk-dual-ov2775.dts   | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mp-evk-ov2775-ov5640.dts | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mp-evk-ov2775.dts        | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mp.dtsi                  | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk-basler-ov2775.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk-basler-ov2775.dts
+index 8c37d0b93da9..74fd64e5bc29 100755
+--- a/arch/arm64/boot/dts/freescale/imx8mp-evk-basler-ov2775.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-evk-basler-ov2775.dts
+@@ -118,7 +118,7 @@
+ 	status = "okay";
+ };
+ 
+-&dewarp {
++&dewarp_0 {
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk-basler-ov5640.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk-basler-ov5640.dts
+index 394975078018..03ce7d9fff4c 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-evk-basler-ov5640.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-evk-basler-ov5640.dts
+@@ -71,6 +71,6 @@
+ 	status = "okay";
+ };
+ 
+-&dewarp {
++&dewarp_0 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk-basler.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk-basler.dts
+index 255d286fcd8e..a4a71af8082b 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-evk-basler.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-evk-basler.dts
+@@ -60,6 +60,6 @@
+ 	status = "okay";
+ };
+ 
+-&dewarp {
++&dewarp_0 {
+ 	status = "okay";
+ };
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk-dual-ov2775.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk-dual-ov2775.dts
+index 6246158e0627..3b85c8b0b6ee 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-evk-dual-ov2775.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-evk-dual-ov2775.dts
+@@ -97,7 +97,7 @@
+ 	status = "okay";
+ };
+ 
+-&dewarp {
++&dewarp_0 {
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk-ov2775-ov5640.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk-ov2775-ov5640.dts
+index d035e5e5cf35..14bdaa04c79b 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-evk-ov2775-ov5640.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-evk-ov2775-ov5640.dts
+@@ -87,7 +87,7 @@
+ 	status = "okay";
+ };
+ 
+-&dewarp {
++&dewarp_0 {
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-evk-ov2775.dts b/arch/arm64/boot/dts/freescale/imx8mp-evk-ov2775.dts
+index 0b1d83122317..6ac494ce788d 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp-evk-ov2775.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mp-evk-ov2775.dts
+@@ -93,7 +93,7 @@
+ 	status = "okay";
+ };
+ 
+-&dewarp {
++&dewarp_0 {
+ 	status = "okay";
+ };
+ 
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+index edc5b5884556..6b0a9c50fb34 100755
+--- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+@@ -1835,7 +1835,7 @@
+ 				};
+ 
+ 				/* FIXME: it's just for reference, should be refined later. */
+-				dewarp: dwe@32e30000 {
++				dewarp_0: dwe@32e30000 {
+ 					compatible = "fsl,imx8mp-dwe";
+ 					reg = <0x32e30000 0x10000>;
+ 					interrupts = <GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH>;
+-- 
+2.30.0
+

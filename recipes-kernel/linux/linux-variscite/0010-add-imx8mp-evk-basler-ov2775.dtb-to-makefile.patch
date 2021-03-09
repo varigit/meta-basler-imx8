@@ -1,0 +1,25 @@
+From b24404ab0bef47f59bf5c7f6010a5e1b3ec0ce32 Mon Sep 17 00:00:00 2001
+From: baochao <Chao.Bao@verisilicon.com>
+Date: Tue, 22 Dec 2020 14:33:08 +0800
+Subject: [PATCH 10/34] add imx8mp-evk-basler-ov2775.dtb to makefile
+
+---
+ arch/arm64/boot/dts/freescale/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index d0c4c1dbc054..917ac4612804 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -72,7 +72,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk.dtb imx8mp-evk-root.dtb imx8mp-evk-inmate.d
+ 			  imx8mp-evk-jdi-wuxga-lvds-panel.dtb imx8mp-ab2.dtb imx8mp-evk-sof-wm8960.dtb \
+ 			  imx8mp-evk-dsp.dtb imx8mp-evk-ov2775.dtb imx8mp-evk-basler.dtb imx8mp-evk-pcie-ep.dtb \
+ 			  imx8mp-evk-spdif-lb.dtb imx8mp-evk-dsp-lpa.dtb imx8mp-evk-ov2775-ov5640.dtb \
+-			  imx8mp-evk-basler-ov5640.dtb imx8mp-evk-dual-ov2775.dtb
++			  imx8mp-evk-basler-ov5640.dtb imx8mp-evk-dual-ov2775.dtb imx8mp-evk-basler-ov2775.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mp-ddr4-evk.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mp-var-som-symphony.dtb imx8mp-var-som-symphony-2nd-ov5640.dtb \
+ 			  imx8mp-var-dart-dt8mcustomboard.dtb imx8mp-var-dart-dt8mcustomboard-legacy.dtb
+-- 
+2.30.0
+
