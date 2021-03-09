@@ -1,0 +1,22 @@
+diff -Nabur a/dwe_driver_of.c b/dwe_driver_of.c
+--- a/dwe_driver_of.c	2021-01-14 14:36:49.000000000 +0200
++++ b/dwe_driver_of.c	2021-03-03 17:11:52.136408147 +0200
+@@ -51,6 +51,7 @@
+  *
+  *****************************************************************************/
+ #include <linux/pm_runtime.h>
++#include <linux/module.h>
+ #include <media/v4l2-event.h>
+ 
+ #include "dwe_driver.h"
+diff -Nabur a/isp_driver_of.c b/isp_driver_of.c
+--- a/isp_driver_of.c	2021-01-14 14:36:49.000000000 +0200
++++ b/isp_driver_of.c	2021-03-03 17:12:18.748586886 +0200
+@@ -51,6 +51,7 @@
+  *
+  *****************************************************************************/
+ #include <linux/pm_runtime.h>
++#include <linux/module.h>
+ #include <media/v4l2-event.h>
+ 
+ #include "isp_driver.h"
