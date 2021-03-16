@@ -1,0 +1,579 @@
+From ac2beabfcbfec89847e9c97745d9eda4deefb7a5 Mon Sep 17 00:00:00 2001
+From: Felix Radensky <felix.r@variscite.com>
+Date: Mon, 15 Mar 2021 22:43:12 +0200
+Subject: [PATCH] imx8mq-var-dart: Add Basler camera support
+
+---
+ arch/arm64/boot/dts/freescale/Makefile        |  19 ++-
+ ...mx8mq-var-dart-dt8mcustomboard-basler.dtsi | 128 ++++++++++++++++++
+ ...ar-dart-dt8mcustomboard-legacy-basler.dtsi |  36 +++++
+ ...rt-dt8mcustomboard-legacy-sd-dp-basler.dts |  14 ++
+ ...-dt8mcustomboard-legacy-sd-hdmi-basler.dts |  14 ++
+ ...-dt8mcustomboard-legacy-sd-lvds-basler.dts |  13 ++
+ ...8mcustomboard-legacy-sd-lvds-dp-basler.dts |  15 ++
+ ...customboard-legacy-sd-lvds-hdmi-basler.dts |  15 ++
+ ...-dt8mcustomboard-legacy-wifi-dp-basler.dts |  14 ++
+ ...t8mcustomboard-legacy-wifi-hdmi-basler.dts |  14 ++
+ ...t8mcustomboard-legacy-wifi-lvds-basler.dts |  14 ++
+ ...customboard-legacy-wifi-lvds-dp-basler.dts |  15 ++
+ ...stomboard-legacy-wifi-lvds-hdmi-basler.dts |  15 ++
+ ...ar-dart-dt8mcustomboard-sd-hdmi-basler.dts |  14 ++
+ ...ar-dart-dt8mcustomboard-sd-lvds-basler.dts |  14 ++
+ ...rt-dt8mcustomboard-sd-lvds-hdmi-basler.dts |  15 ++
+ ...-dart-dt8mcustomboard-wifi-hdmi-basler.dts |  14 ++
+ ...-dart-dt8mcustomboard-wifi-lvds-basler.dts |  14 ++
+ ...-dt8mcustomboard-wifi-lvds-hdmi-basler.dts |  15 ++
+ 19 files changed, 411 insertions(+), 1 deletion(-)
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-basler.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-basler.dtsi
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-dp-basler.dts
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-hdmi-basler.dts
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-basler.dts
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-dp-basler.dts
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-hdmi-basler.dts
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-dp-basler.dts
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-hdmi-basler.dts
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-basler.dts
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-dp-basler.dts
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-hdmi-basler.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-sd-hdmi-basler.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-sd-lvds-basler.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-sd-lvds-hdmi-basler.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-wifi-hdmi-basler.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-wifi-lvds-basler.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-wifi-lvds-hdmi-basler.dts
+
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index 53ff734fc642..0c414345e852 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -136,7 +136,24 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mq-var-dart-dt8mcustomboard-legacy-m4-sd-dp.dtb \
+ 			  imx8mq-var-dart-dt8mcustomboard-sd-lvds-hdmi.dtb \
+ 			  imx8mq-var-dart-dt8mcustomboard-wifi-hdmi.dtb \
+ 			  imx8mq-var-dart-dt8mcustomboard-wifi-lvds.dtb \
+-			  imx8mq-var-dart-dt8mcustomboard-wifi-lvds-hdmi.dtb
++			  imx8mq-var-dart-dt8mcustomboard-wifi-lvds-hdmi.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-wifi-lvds-hdmi.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-legacy-sd-dp-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-legacy-sd-hdmi-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-dp-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-hdmi-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-legacy-wifi-dp-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-legacy-wifi-hdmi-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-dp-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-hdmi-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-sd-hdmi-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-sd-lvds-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-sd-lvds-hdmi-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-wifi-hdmi-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-wifi-lvds-basler.dtb \
++			  imx8mq-var-dart-dt8mcustomboard-wifi-lvds-hdmi-basler.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8qm-mek-dom0.dtb imx8qm-mek-domu.dtb \
+ 			  imx8qm-mek-root.dtb imx8qm-mek-inmate.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8qxp-ai_ml.dtb
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-basler.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-basler.dtsi
+new file mode 100755
+index 000000000000..47cc81fbb80a
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-basler.dtsi
+@@ -0,0 +1,128 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++&csi1_bridge {
++	dma-coherent;
++	bsl,dma-invalidate;
++	status = "okay";
++};
++
++&csi2_bridge {
++	dma-coherent;
++	bsl,dma-invalidate;
++	status = "okay";
++};
++
++&mipi_csi_1 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	rxhs-settle = <0x07>;
++	status = "okay";
++
++	/* When the second clock is changed, the link-frequencies entry in
++	 * the basler_camera_mipi1_ep node also needs to be updated. */
++	assigned-clock-rates = <266000000>, <125000000>, <66000000>;
++
++	port {
++		mipi1_sensor_ep: endpoint@0 {
++			remote-endpoint = <&basler_camera_mipi1_ep>;
++
++			/* If the following entries are changed, then
++			 * the entries in the basler_camera_mipi1_ep node
++			 * need to updated too. */
++			clock-lanes = <0>;
++			data-lanes = <1 2 3 4>;
++		};
++	};
++};
++
++&mipi_csi_2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	rxhs-settle = <0x07>;
++	status = "okay";
++
++	/* When the second clock is changed, the link-frequencies entry in
++	 * the basler_camera_mipi2_ep node also needs to be updated. */
++	assigned-clock-rates = <266000000>, <125000000>, <66000000>;
++
++	port {
++		mipi2_sensor_ep: endpoint@0 {
++			remote-endpoint = <&basler_camera_mipi2_ep>;
++
++			/* If the following entries are changed, then
++			 * the entries in the basler_camera_mipi2_ep node
++			 * need to updated too. */
++			clock-lanes = <0>;
++			data-lanes = <1 2 3 4>;
++		};
++	};
++};
++
++&i2c2 {
++	clock-frequency = <400000>;
++
++	/delete-node/ov5640_mipi1@3c;
++
++	basler_camera_mipi1: basler_camera_mipi@36 {
++		compatible = "basler,basler-camera";
++		reg = <0x36>;
++		status = "okay";
++
++		port {
++			basler_camera_mipi1_ep: endpoint {
++				remote-endpoint = <&mipi1_sensor_ep>;
++
++				/* IMPORTANT: The following three entries needs to be held
++				 * in sync with the information stored in the mipi2_sensor_ep node.
++				 */
++				data-lanes = <1 2 3 4>;
++				clock-lanes = <0>;
++				link-frequencies = /bits/ 64 <248000000>;
++			};
++		};
++	};
++};
++
++&i2c4 {
++	clock-frequency = <400000>;
++
++	/delete-node/ov5640_mipi2@3c;
++
++	basler_camera_mipi2: basler_camera_mipi@36 {
++		compatible = "basler,basler-camera";
++		reg = <0x36>;
++		status = "okay";
++
++		port {
++			basler_camera_mipi2_ep: endpoint {
++				remote-endpoint = <&mipi2_sensor_ep>;
++
++				/* IMPORTANT: The following three entries needs to be held
++				 * in sync with the information stored in the mipi1_sensor_ep node. */
++				data-lanes = <1 2 3 4>;
++				clock-lanes = <0>;
++				link-frequencies = /bits/ 64 <248000000>;
++			};
++		};
++	};
++};
++
++&pca6408_1 {
++	cam1_pwr_hog {
++		gpio-hog;
++		gpios = <3 0>;
++		output-high;
++		line-name = "basler_cam1_pwr";
++	};
++
++	cam2_pwr_hog {
++		gpio-hog;
++		gpios = <3 0>;
++		output-high;
++		line-name = "basler_cam2_pwr";
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-basler.dtsi b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-basler.dtsi
+new file mode 100644
+index 000000000000..c8d4f6eee0fe
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-basler.dtsi
+@@ -0,0 +1,36 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard-basler.dtsi"
++
++&gpio4 {
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_basler>;
++
++	cam1_pwr_hog {
++		gpio-hog;
++		gpios = <8 0>;
++		output-high;
++		line-name = "cam1_pwr";
++	};
++
++	cam2_pwr_hog {
++		gpio-hog;
++		gpios = <9 0>;
++		output-high;
++		line-name = "cam2_pwr";
++	};
++};
++
++&iomuxc {
++	pinctrl_basler: baslergrp {
++		fsl,pins = <
++			MX8MQ_IOMUXC_SAI1_RXD6_GPIO4_IO8		0x19
++			MX8MQ_IOMUXC_SAI1_RXD7_GPIO4_IO9		0x19
++		>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-dp-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-dp-basler.dts
+new file mode 100755
+index 000000000000..5f6c606afda3
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-dp-basler.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard-legacy.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-sd.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-dp.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 1.x SD+DP+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-hdmi-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-hdmi-basler.dts
+new file mode 100755
+index 000000000000..c022946048bc
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-hdmi-basler.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard-legacy.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-sd.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-hdmi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 1.x SD+HDMI+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-basler.dts
+new file mode 100755
+index 000000000000..ce3f67ff9a13
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-basler.dts
+@@ -0,0 +1,13 @@
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard-legacy.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-sd.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-lvds-dcss.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 1.x SD+LVDS+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-dp-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-dp-basler.dts
+new file mode 100755
+index 000000000000..f4653add5118
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-dp-basler.dts
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard-legacy.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-sd.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-lvds-lcdif.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-dp.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 1.x SD+LVDS+DP+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-hdmi-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-hdmi-basler.dts
+new file mode 100755
+index 000000000000..1964d2985790
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-sd-lvds-hdmi-basler.dts
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard-legacy.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-sd.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-hdmi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-lvds-lcdif.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 1.x SD+LVDS+HDMI+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-dp-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-dp-basler.dts
+new file mode 100755
+index 000000000000..4fe00fb0cda5
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-dp-basler.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard-legacy.dtsi"
++#include "imx8mq-var-dart-wifi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-dp.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 1.x WIFI+DP+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-hdmi-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-hdmi-basler.dts
+new file mode 100755
+index 000000000000..00d92c6e257e
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-hdmi-basler.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard-legacy.dtsi"
++#include "imx8mq-var-dart-wifi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-hdmi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 1.x WIFI+HDMI+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-basler.dts
+new file mode 100755
+index 000000000000..5891638c0da4
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-basler.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard-legacy.dtsi"
++#include "imx8mq-var-dart-wifi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-lvds-dcss.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 1.x WIFI+LVDS+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-dp-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-dp-basler.dts
+new file mode 100755
+index 000000000000..d6fcfdea5a23
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-dp-basler.dts
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard-legacy.dtsi"
++#include "imx8mq-var-dart-wifi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-lvds-lcdif.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-dp.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 1.x WIFI+LVDS+DP+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-hdmi-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-hdmi-basler.dts
+new file mode 100755
+index 000000000000..e1b427a1c4fa
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-legacy-wifi-lvds-hdmi-basler.dts
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard-legacy.dtsi"
++#include "imx8mq-var-dart-wifi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-lvds-lcdif.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-hdmi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-legacy-dp.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 1.x WIFI+LVDS+HDMI+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-sd-hdmi-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-sd-hdmi-basler.dts
+new file mode 100644
+index 000000000000..6c626331bcca
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-sd-hdmi-basler.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-sd.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-hdmi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 2.x SD+HDMI+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-sd-lvds-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-sd-lvds-basler.dts
+new file mode 100644
+index 000000000000..a44eb3fa2b33
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-sd-lvds-basler.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-sd.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-lvds-dcss.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 2.x SD+LVDS+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-sd-lvds-hdmi-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-sd-lvds-hdmi-basler.dts
+new file mode 100644
+index 000000000000..0946f34e7d3b
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-sd-lvds-hdmi-basler.dts
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-sd.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-hdmi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-lvds-lcdif.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 2.x SD+LVDS+HDMI+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-wifi-hdmi-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-wifi-hdmi-basler.dts
+new file mode 100644
+index 000000000000..38c103f8fb15
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-wifi-hdmi-basler.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard.dtsi"
++#include "imx8mq-var-dart-wifi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-hdmi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 2.x WIFI+HDMI+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-wifi-lvds-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-wifi-lvds-basler.dts
+new file mode 100644
+index 000000000000..29389f9d030f
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-wifi-lvds-basler.dts
+@@ -0,0 +1,14 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard.dtsi"
++#include "imx8mq-var-dart-wifi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-lvds-dcss.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 2.x WIFI+LVDS+Basler";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-wifi-lvds-hdmi-basler.dts b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-wifi-lvds-hdmi-basler.dts
+new file mode 100644
+index 000000000000..d4b750548bba
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mq-var-dart-dt8mcustomboard-wifi-lvds-hdmi-basler.dts
+@@ -0,0 +1,15 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++/*
++ * Copyright 2017 NXP
++ * Copyright 2018-2021 Variscite Ltd.
++ */
++
++#include "imx8mq-var-dart-dt8mcustomboard.dtsi"
++#include "imx8mq-var-dart-wifi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-lvds-lcdif.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-hdmi.dtsi"
++#include "imx8mq-var-dart-dt8mcustomboard-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M on DT8MCustomBoard 2.x WIFI+LVDS+HDMI+Basler";
++};
+-- 
+2.17.1
+
