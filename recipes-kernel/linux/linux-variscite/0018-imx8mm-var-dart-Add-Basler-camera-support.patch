@@ -1,0 +1,309 @@
+From 6759684f55e4afdf943856c7e9e9dd38ab6a3ec2 Mon Sep 17 00:00:00 2001
+From: Felix Radensky <felix.r@variscite.com>
+Date: Mon, 15 Mar 2021 12:07:16 +0200
+Subject: [PATCH] imx8mm-var-dart: Add Basler camera support
+
+---
+ arch/arm64/boot/dts/freescale/Makefile        |  4 +-
+ ...imx8mm-var-dart-dt8mcustomboard-basler.dts | 26 +++++++
+ ...mx8mm-var-dart-dt8mcustomboard-basler.dtsi | 66 ++++++++++++++++
+ ...var-dart-dt8mcustomboard-legacy-basler.dts | 35 +++++++++
+ .../imx8mm-var-som-symphony-basler.dts        | 15 ++++
+ .../imx8mm-var-som-symphony-basler.dtsi       | 77 +++++++++++++++++++
+ .../imx8mm-var-som-symphony-legacy-basler.dts | 15 ++++
+ 7 files changed, 237 insertions(+), 1 deletion(-)
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mm-var-dart-dt8mcustomboard-basler.dts
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mm-var-dart-dt8mcustomboard-basler.dtsi
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mm-var-dart-dt8mcustomboard-legacy-basler.dts
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony-basler.dts
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony-basler.dtsi
+ create mode 100755 arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony-legacy-basler.dts
+
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index f5ccda9c7a69..53ff734fc642 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -59,7 +59,9 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-ab2.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mm-var-dart-dt8mcustomboard.dtb imx8mm-var-dart-dt8mcustomboard-legacy.dtb \
+ 			  imx8mm-var-dart-dt8mcustomboard-m4.dtb imx8mm-var-dart-dt8mcustomboard-legacy-m4.dtb \
+ 			  imx8mm-var-som-symphony.dtb imx8mm-var-som-symphony-legacy.dtb \
+-			  imx8mm-var-som-symphony-m4.dtb imx8mm-var-som-symphony-legacy-m4.dtb
++			  imx8mm-var-som-symphony-m4.dtb imx8mm-var-som-symphony-legacy-m4.dtb \
++			  imx8mm-var-dart-dt8mcustomboard-basler.dtb imx8mm-var-dart-dt8mcustomboard-legacy-basler.dtb \
++			  imx8mm-var-som-symphony-basler.dtb imx8mm-var-som-symphony-legacy-basler.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb imx8mn-evk-rm67191.dtb imx8mn-ddr4-evk.dtb imx8mn-ddr4-evk-ak5558.dtb \
+ 			  imx8mn-ddr4-evk-rm67191.dtb imx8mn-ddr4-evk-rpmsg.dtb imx8mn-ddr4-evk-usd-wifi.dtb \
+ 			  imx8mn-evk-ak5558.dtb imx8mn-evk-rpmsg.dtb \
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-dart-dt8mcustomboard-basler.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-dart-dt8mcustomboard-basler.dts
+new file mode 100755
+index 000000000000..92b228c6edb2
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-var-dart-dt8mcustomboard-basler.dts
+@@ -0,0 +1,26 @@
++/*
++ *  Devicetree for a Basler camera on Variscite DART-MX8M-MINI
++ *
++ *  Created by Hauke Wulff on 23.07.19.
++ *  Copyright (c) 2019 Basler AG. All rights reserved.
++ *  Copyright 2020-2021 Variscte Ltd.
++ *
++ */
++
++#include "imx8mm-var-dart-dt8mcustomboard.dts"
++#include "imx8mm-var-dart-dt8mcustomboard-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M-MINI on DT8MCustomBoard 2.x with Basler camera";
++};
++
++&i2c4 {
++	pca6408_1: gpio@20 {
++		cam_pwr_hog {
++			gpio-hog;
++			gpios = <3 0>;
++			output-high;
++			line-name = "basler_cam_pwr";
++		};
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-dart-dt8mcustomboard-basler.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-var-dart-dt8mcustomboard-basler.dtsi
+new file mode 100755
+index 000000000000..9d3a6ea1afbf
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-var-dart-dt8mcustomboard-basler.dtsi
+@@ -0,0 +1,66 @@
++/*
++ *  Devicetree for a Basler camera on Variscite DART-MX8M-MINI
++ *
++ *  Created by Hauke Wulff on 23.07.19.
++ *  Copyright (c) 2019 Basler AG. All rights reserved.
++ *  Copyright 2020-2021 Variscite Ltd.
++ *
++ */
++
++&mipi_csi_1 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++
++	port {
++		mipi1_sensor_ep: endpoint@1 {
++			remote-endpoint = <&basler_camera_mipi1_ep>;
++			/* If the following entries are changed, then
++			 * the entries in the basler_camera_mipi1_ep node
++			 * need to updated too. */
++			/* On the i.mx8mmini NXP uses data-lanes
++			 * other than expected by the kernel.
++			 * On the imx8mmini the entry data-lanes
++			 * must contain the number of data lanes.
++			 */
++			data-lanes = <4>;
++			clock-lanes = <0>;
++			link-frequencies = /bits/ 64 <496000000>;
++
++			csis-hs-settle = <13>;
++			csis-clk-settle = <2>;
++			csis-wclk;
++		};
++	};
++};
++
++&csi1_bridge {
++	dma-coherent;
++	bsl,dma-invalidate;
++	status = "okay";
++};
++
++&i2c2 {
++	clock-frequency = <400000>;
++
++	/delete-node/ov5640_mipi1@3c;
++
++	basler_camera_mipi1: basler_camera_mipi@36 {
++		compatible = "basler,basler-camera";
++		reg = <0x36>;
++		status = "okay";
++
++		port {
++			basler_camera_mipi1_ep: endpoint {
++				remote-endpoint = <&mipi1_sensor_ep>;
++
++				/* IMPORTANT: The following three entries needs to be held
++				 * in sync with the information stored in the csi1_mipi_ep node
++				 */
++				data-lanes = <1 2 3 4>;
++				clock-lanes = <0>;
++				link-frequencies = /bits/ 64 <496000000>;
++			};
++		};
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-dart-dt8mcustomboard-legacy-basler.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-dart-dt8mcustomboard-legacy-basler.dts
+new file mode 100755
+index 000000000000..09de8a6f4eea
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-var-dart-dt8mcustomboard-legacy-basler.dts
+@@ -0,0 +1,35 @@
++/*
++ *  Devicetree for a Basler camera on Variscite DART-MX8M-MINI
++ *
++ *  Created by Hauke Wulff on 23.07.19.
++ *  Copyright (c) 2019 Basler AG. All rights reserved.
++ *  Copyright 2020-2021 Variscte Ltd.
++ *
++ */
++
++#include "imx8mm-var-dart-dt8mcustomboard-legacy.dts"
++#include "imx8mm-var-dart-dt8mcustomboard-basler.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M-MINI on DT8MCustomBoard 1.x with Basler camera";
++};
++
++&gpio4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_basler>;
++
++	cam_pwr_hog {
++		gpio-hog;
++		gpios = <8 0>;
++		output-high;
++		line-name = "basler_cam_pwr";
++	};
++};
++
++&iomuxc {
++	pinctrl_basler: baslergrp {
++		fsl,pins = <
++			MX8MM_IOMUXC_SAI1_RXD6_GPIO4_IO8      0x19
++		>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony-basler.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony-basler.dts
+new file mode 100755
+index 000000000000..6a731eb4728f
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony-basler.dts
+@@ -0,0 +1,15 @@
++/*
++ *  Devicetree for a Basler camera on Variscite VAR-SOM-MX8M-MINI
++ *
++ *  Created by Hauke Wulff on 23.07.19.
++ *  Copyright (c) 2019 Basler AG. All rights reserved.
++ *  Copyright 2020-2021 Variscite Ltd.
++ *
++ */
++
++#include "imx8mm-var-som-symphony.dts"
++#include "imx8mm-var-som-symphony-basler.dtsi"
++
++/ {
++	model = "Variscite VAR-SOM-MX8M-MINI on Symphony-Board 1.4a and above with Basler camera";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony-basler.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony-basler.dtsi
+new file mode 100755
+index 000000000000..d3926333df66
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony-basler.dtsi
+@@ -0,0 +1,77 @@
++/*
++ *  Devicetree for a Basler camera on Variscite VAR-SOM-MX8M-MINI
++ *
++ *  Created by Hauke Wulff on 23.07.19.
++ *  Copyright (c) 2019 Basler AG. All rights reserved.
++ *  Copyright 2020-2021 Variscite Ltd.
++ *
++ */
++
++&mipi_csi_1 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	status = "okay";
++
++	port {
++		mipi1_sensor_ep: endpoint@1 {
++			remote-endpoint = <&basler_camera_mipi1_ep>;
++			/* If the following entries are changed, then
++			 * the entries in the basler_camera_mipi1_ep node
++			 * need to updated too. */
++			/* On the i.mx8mmini NXP uses data-lanes
++			 * other than expected by the kernel.
++			 * On the imx8mmini the entry data-lanes
++			 * must contain the number of data lanes.
++			 */
++			data-lanes = <4>;
++			clock-lanes = <0>;
++			link-frequencies = /bits/ 64 <496000000>;
++
++			csis-hs-settle = <13>;
++			csis-clk-settle = <2>;
++			csis-wclk;
++		};
++	};
++};
++
++&csi1_bridge {
++	dma-coherent;
++	bsl,dma-invalidate;
++	status = "okay";
++};
++
++&i2c2 {
++	clock-frequency = <400000>;
++
++	/delete-node/ov5640_mipi1@3c;
++
++	basler_camera_mipi1: basler_camera_mipi@36 {
++		compatible = "basler,basler-camera";
++		reg = <0x36>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_csi1>;
++		status = "okay";
++
++		port {
++			basler_camera_mipi1_ep: endpoint {
++				remote-endpoint = <&mipi1_sensor_ep>;
++
++				/* IMPORTANT: The following three entries needs to be held
++				 * in sync with the information stored in the csi1_mipi_ep node
++				 */
++				data-lanes = <1 2 3 4>;
++				clock-lanes = <0>;
++				link-frequencies = /bits/ 64 <496000000>;
++			};
++		};
++	};
++};
++
++&gpio5 {
++	cam_pwr_hog {
++		gpio-hog;
++		gpios = <12 0>;
++		output-high;
++		line-name = "cam_pwr";
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony-legacy-basler.dts b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony-legacy-basler.dts
+new file mode 100755
+index 000000000000..8509711b2ac2
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mm-var-som-symphony-legacy-basler.dts
+@@ -0,0 +1,15 @@
++/*
++ *  Devicetree for a Basler camera on Variscite VAR-SOM-MX8M-MINI
++ *
++ *  Created by Hauke Wulff on 23.07.19.
++ *  Copyright (c) 2019 Basler AG. All rights reserved.
++ *  Copyright 2020-2021 Variscite Ltd.
++ *
++ */
++
++#include "imx8mm-var-som-symphony-legacy.dts"
++#include "imx8mm-var-som-symphony-basler.dtsi"
++
++/ {
++	model = "Variscite VAR-SOM-MX8M-MINI on Symphony-Board 1.4 and below with Basler camera";
++};
+-- 
+2.17.1
+
