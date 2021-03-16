@@ -12,5 +12,6 @@ SRC_URI += "file://0001-make-sensor-controls-available-in-mx6s_capture.patch \
             file://0010-media-mxc-Enable-dual-pixel-mode-for-YUV422.patch \
             file://0015-mxc-capture-Add-debug-event-interrupt-counters.patch \
 	    file://0016-mxc-Fix-MASK_OPTION-in-CSICR18-to-avoid-loosing-firs.patch \
+	    file://0017-media-mx6s_capture-Fix-mx6s_vidioc_g_fmt_vid_cap-to-.patch \
 "
 

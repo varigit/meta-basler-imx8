@@ -1,0 +1,41 @@
+From c470f3764d89a22dfde63cfc4cdf58b0c00159a2 Mon Sep 17 00:00:00 2001
+From: Felix Radensky <felix.r@variscite.com>
+Date: Mon, 15 Mar 2021 12:22:36 +0200
+Subject: [PATCH] media: mx6s_capture: Fix mx6s_vidioc_g_fmt_vid_cap to support
+ Basler cameras
+
+---
+ drivers/media/platform/mxc/capture/mx6s_capture.c | 12 ------------
+ 1 file changed, 12 deletions(-)
+
+diff --git a/drivers/media/platform/mxc/capture/mx6s_capture.c b/drivers/media/platform/mxc/capture/mx6s_capture.c
+index 5731f41b25cc..41a38bc5bced 100644
+--- a/drivers/media/platform/mxc/capture/mx6s_capture.c
++++ b/drivers/media/platform/mxc/capture/mx6s_capture.c
+@@ -1486,23 +1486,11 @@ static int mx6s_vidioc_g_fmt_vid_cap(struct file *file, void *priv,
+ 				    struct v4l2_format *f)
+ {
+ 	struct mx6s_csi_dev *csi_dev = video_drvdata(file);
+-	struct mx6s_fmt *fmt6s = NULL;
+ 
+ 	WARN_ON(priv != file->private_data);
+ 
+ 	f->fmt.pix = csi_dev->pix;
+-	fmt6s = format_by_mbus(csi_dev->mbus_code);
+ 
+-	if (fmt6s != NULL) {
+-		f->fmt.pix.pixelformat = fmt6s->pixelformat;
+-		csi_dev->pix.pixelformat = fmt6s->pixelformat;
+-	}
+-
+-	f->fmt.pix.width = csi_dev->pix.width;
+-	f->fmt.pix.height = csi_dev->pix.height;
+-	f->fmt.pix.sizeimage = csi_dev->pix.sizeimage;
+-	f->fmt.pix.field = csi_dev->pix.field;
+-	f->type = csi_dev->type;
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
+
