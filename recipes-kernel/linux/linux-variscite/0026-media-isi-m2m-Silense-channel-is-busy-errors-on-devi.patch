@@ -1,0 +1,30 @@
+From c59c433c14a905af0dc863ca6c1791aacfc64cba Mon Sep 17 00:00:00 2001
+From: Felix Radensky <felix.r@variscite.com>
+Date: Wed, 18 Aug 2021 11:16:54 +0300
+Subject: [PATCH] media: isi: m2m: Silense "channel is busy" errors on device
+ open
+
+Due to a bug in Basler pylonviewer application that tries to open
+an already opened device, this driver spams the kernel log with
+"channel busy" messages. Convert this message to dev_dbg() to avoid
+the problem.
+---
+ drivers/staging/media/imx/imx8-isi-m2m.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/media/imx/imx8-isi-m2m.c b/drivers/staging/media/imx/imx8-isi-m2m.c
+index e292b91e9ecc..4d58ebe27766 100644
+--- a/drivers/staging/media/imx/imx8-isi-m2m.c
++++ b/drivers/staging/media/imx/imx8-isi-m2m.c
+@@ -449,7 +449,7 @@ static int mxc_isi_m2m_open(struct file *file)
+ 	int ret = 0;
+ 
+ 	if (atomic_read(&mxc_isi->usage_count) > 0) {
+-		dev_err(dev, "ISI channel[%d] is busy\n", isi_m2m->id);
++		dev_dbg(dev, "ISI channel[%d] is busy\n", isi_m2m->id);
+ 		return -EBUSY;
+ 	}
+ 
+-- 
+2.17.1
+

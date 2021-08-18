@@ -1,0 +1,534 @@
+From aaf6c3f8224a650f24efffad105337b0e1dad516 Mon Sep 17 00:00:00 2001
+From: Felix Radensky <felix.r@variscite.com>
+Date: Tue, 17 Aug 2021 11:24:43 +0300
+Subject: [PATCH] imx8mp-var-dart: Add Basler camera support
+
+	The following DTS files refer to daA3840-30mc camera connected to ISP0:
+		imx8mp-var-dart-dt8mcustomboard-basler-isp0.dts
+		imx8mp-var-dart-dt8mcustomboard-legacy-basler-isp0.dts
+		imx8mp-var-som-symphony-basler-isp0.dts
+
+	The following DTS files refer to daA4200-30mci camera connected to ISI0:
+		imx8mp-var-dart-dt8mcustomboard-basler-isi0.dts
+		imx8mp-var-dart-dt8mcustomboard-legacy-basler-isi0.dts
+		imx8mp-var-som-symphony-basler-isi0.dts
+---
+ arch/arm64/boot/dts/freescale/Makefile        |  6 ++
+ ...p-var-dart-dt8mcustomboard-basler-isi0.dts | 23 +++++
+ ...-var-dart-dt8mcustomboard-basler-isi0.dtsi | 71 +++++++++++++++
+ ...p-var-dart-dt8mcustomboard-basler-isp0.dts | 23 +++++
+ ...-var-dart-dt8mcustomboard-basler-isp0.dtsi | 72 +++++++++++++++
+ ...art-dt8mcustomboard-legacy-basler-isi0.dts | 32 +++++++
+ ...art-dt8mcustomboard-legacy-basler-isp0.dts | 32 +++++++
+ .../imx8mp-var-som-symphony-basler-isi0.dts   | 89 ++++++++++++++++++
+ .../imx8mp-var-som-symphony-basler-isp0.dts   | 90 +++++++++++++++++++
+ 9 files changed, 438 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isi0.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isi0.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isp0.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isp0.dtsi
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-legacy-basler-isi0.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-legacy-basler-isp0.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-var-som-symphony-basler-isi0.dts
+ create mode 100644 arch/arm64/boot/dts/freescale/imx8mp-var-som-symphony-basler-isp0.dts
+
+diff --git a/arch/arm64/boot/dts/freescale/Makefile b/arch/arm64/boot/dts/freescale/Makefile
+index 32f2b4b1f60f..0fa774419a20 100644
+--- a/arch/arm64/boot/dts/freescale/Makefile
++++ b/arch/arm64/boot/dts/freescale/Makefile
+@@ -78,6 +78,12 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mp-evk.dtb imx8mp-evk-root.dtb imx8mp-evk-inmate.d
+ dtb-$(CONFIG_ARCH_MXC) += imx8mp-ddr4-evk.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mp-var-som-symphony.dtb imx8mp-var-som-symphony-2nd-ov5640.dtb imx8mp-var-som-symphony-m7.dtb imx8mp-var-som-symphony-2nd-ov5640-m7.dtb\
+ 			  imx8mp-var-dart-dt8mcustomboard.dtb imx8mp-var-dart-dt8mcustomboard-legacy.dtb imx8mp-var-dart-dt8mcustomboard-m7.dtb imx8mp-var-dart-dt8mcustomboard-legacy-m7.dtb
++dtb-$(CONFIG_ARCH_MXC) += imx8mp-var-dart-dt8mcustomboard.dtb imx8mp-var-dart-dt8mcustomboard-legacy.dtb \
++			  imx8mp-var-som-symphony-basler-isp0.dtb imx8mp-var-som-symphony-basler-isi0.dtb \
++			  imx8mp-var-dart-dt8mcustomboard-basler-isp0.dtb \
++			  imx8mp-var-dart-dt8mcustomboard-basler-isi0.dtb \
++			  imx8mp-var-dart-dt8mcustomboard-legacy-basler-isp0.dtb \
++			  imx8mp-var-dart-dt8mcustomboard-legacy-basler-isi0.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk.dtb imx8mq-evk-rpmsg.dtb imx8mq-evk-pcie1-m2.dtb imx8mq-evk-usd-wifi.dtb \
+ 			  imx8mq-evk-usdhc2-m2.dtb imx8mq-evk-pcie-ep.dtb
+ dtb-$(CONFIG_ARCH_MXC) += imx8mq-evk-ak4497.dtb imx8mq-evk-audio-tdm.dtb imx8mq-evk-pdm.dtb
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isi0.dts b/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isi0.dts
+new file mode 100644
+index 000000000000..3b6a3e7684b5
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isi0.dts
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ * Copyright 2020-2021 Variscite Ltd.
++ */
++
++#include "imx8mp-var-dart-dt8mcustomboard.dts"
++#include "imx8mp-var-dart-dt8mcustomboard-basler-isi0.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M-PLUS on DT8MCustomBoard 2.x with Basler camera on ISI0";
++};
++
++&i2c4 {
++	pca6408_1: gpio@20 {
++		cam_pwr_hog {
++			gpio-hog;
++			gpios = <3 0>;
++			output-high;
++			line-name = "basler_cam_pwr";
++		};
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isi0.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isi0.dtsi
+new file mode 100644
+index 000000000000..d6421aed6700
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isi0.dtsi
+@@ -0,0 +1,71 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ * Copyright 2020-2021 Variscite Ltd.
++ */
++
++&i2c2 {
++	/delete-node/ov5640_mipi@3c;
++
++	basler_camera@36 {
++		compatible = "basler,basler-camera", "basler-camera";
++		reg = <0x36>;
++		csi_id = <0x00>;
++		status = "okay";
++
++		port {
++			basler_ep_0: endpoint {
++				data-lanes = <1 2 3 4>;
++				clock-lanes = <0>;
++				link-frequencies = /bits/ 64 <500000000>;
++				remote-endpoint = <&mipi_csi0_ep>;
++			};
++		};
++	};
++};
++
++&ov5640_mipi1 {
++	status = "disabled";
++};
++
++&mipi_csi_0 {
++	status = "okay";
++
++	port@0 {
++		mipi_csi0_ep: endpoint {
++			remote-endpoint = <&basler_ep_0>;
++			data-lanes = <4>;
++			csis-hs-settle = <16>;
++		};
++	};
++};
++
++&mipi_csi_1 {
++	status = "disabled";
++};
++
++&cameradev {
++	status = "okay";
++};
++
++&isi_0 {
++	status = "okay";
++	fsl,chain_buf;
++};
++
++&isi_1 {
++	status = "disabled";
++	fsl,chain_buf;
++};
++
++&isp_0 {
++	status = "disabled";
++};
++
++&isp_1 {
++	status = "disabled";
++};
++
++&dewarp {
++	status = "disabled";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isp0.dts b/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isp0.dts
+new file mode 100644
+index 000000000000..5cc3395f3adb
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isp0.dts
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ * Copyright 2020-2021 Variscite Ltd.
++ */
++
++#include "imx8mp-var-dart-dt8mcustomboard.dts"
++#include "imx8mp-var-dart-dt8mcustomboard-basler-isp0.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M-PLUS on DT8MCustomBoard 2.x with Basler camera on ISP0";
++};
++
++&i2c4 {
++	pca6408_1: gpio@20 {
++		cam_pwr_hog {
++			gpio-hog;
++			gpios = <3 0>;
++			output-high;
++			line-name = "basler_cam_pwr";
++		};
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isp0.dtsi b/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isp0.dtsi
+new file mode 100644
+index 000000000000..55d5d882fb39
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-basler-isp0.dtsi
+@@ -0,0 +1,72 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ * Copyright 2020-2021 Variscite Ltd.
++ */
++
++&i2c2 {
++	/delete-node/ov5640_mipi@3c;
++
++	basler_camera@36 {
++		compatible = "basler,basler-camera-vvcam", "basler-camera-vvcam";
++		reg = <0x36>;
++		csi_id = <0x00>;
++		status = "okay";
++
++		port {
++			basler_ep_0: endpoint {
++				data-lanes = <1 2 3 4>;
++				clock-lanes = <0>;
++				link-frequencies = /bits/ 64 <750000000>;
++				max-lane-frequency = /bits/ 64 <750000000>;
++				max-pixel-frequency = /bits/ 64 <500000000>;
++				max-data-rate = /bits/ 64 <0>;
++				remote-endpoint = <&mipi_csi0_ep>;
++			};
++		};
++	};
++};
++
++&ov5640_mipi1 {
++	status = "disabled";
++};
++
++&mipi_csi_0 {
++	status = "okay";
++
++	port@0 {
++		mipi_csi0_ep: endpoint {
++			remote-endpoint = <&basler_ep_0>;
++			data-lanes = <4>;
++			csis-hs-settle = <16>;
++		};
++	};
++};
++
++&mipi_csi_1 {
++	status = "disabled";
++};
++
++&cameradev {
++	status = "okay";
++};
++
++&isi_0 {
++	status = "disabled";
++};
++
++&isi_1 {
++	status = "disabled";
++};
++
++&isp_0 {
++	status = "okay";
++};
++
++&isp_1 {
++	status = "disabled";
++};
++
++&dewarp {
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-legacy-basler-isi0.dts b/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-legacy-basler-isi0.dts
+new file mode 100644
+index 000000000000..9daa36fd1440
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-legacy-basler-isi0.dts
+@@ -0,0 +1,32 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ * Copyright 2020-2021 Variscite Ltd.
++ */
++
++#include "imx8mp-var-dart-dt8mcustomboard-legacy.dts"
++#include "imx8mp-var-dart-dt8mcustomboard-basler-isi0.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M-PLUS on DT8MCustomBoard 1.x with Basler camera on ISI0";
++};
++
++&gpio4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_basler>;
++
++	cam_pwr_hog {
++		gpio-hog;
++		gpios = <8 0>;
++		output-high;
++		line-name = "basler_cam_pwr";
++	};
++};
++
++&iomuxc {
++	pinctrl_basler: baslergrp {
++		fsl,pins = <
++			MX8MP_IOMUXC_SAI1_RXD6__GPIO4_IO08	0x19
++		>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-legacy-basler-isp0.dts b/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-legacy-basler-isp0.dts
+new file mode 100644
+index 000000000000..33103fdd42a1
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mp-var-dart-dt8mcustomboard-legacy-basler-isp0.dts
+@@ -0,0 +1,32 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ * Copyright 2020-2021 Variscite Ltd.
++ */
++
++#include "imx8mp-var-dart-dt8mcustomboard-legacy.dts"
++#include "imx8mp-var-dart-dt8mcustomboard-basler-isp0.dtsi"
++
++/ {
++	model = "Variscite DART-MX8M-PLUS on DT8MCustomBoard 1.x with Basler camera on ISP0";
++};
++
++&gpio4 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_basler>;
++
++	cam_pwr_hog {
++		gpio-hog;
++		gpios = <8 0>;
++		output-high;
++		line-name = "basler_cam_pwr";
++	};
++};
++
++&iomuxc {
++	pinctrl_basler: baslergrp {
++		fsl,pins = <
++			MX8MP_IOMUXC_SAI1_RXD6__GPIO4_IO08	0x19
++		>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-var-som-symphony-basler-isi0.dts b/arch/arm64/boot/dts/freescale/imx8mp-var-som-symphony-basler-isi0.dts
+new file mode 100644
+index 000000000000..cfa2fec0bedc
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mp-var-som-symphony-basler-isi0.dts
+@@ -0,0 +1,89 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ * Copyright 2020-2021 Variscite Ltd.
++ */
++
++#include "imx8mp-var-som-symphony.dts"
++
++/ {
++	model = "Variscite VAR-SOM-MX8M-PLUS on Symphony-Board with Basler camera on ISI0";
++};
++
++&i2c3 {
++	/delete-node/ov5640_mipi@3c;
++
++	basler_camera_vvcam@36 {
++		compatible = "basler,basler-camera", "basler-camera";
++		reg = <0x36>;
++		csi_id = <0x00>;
++		status = "okay";
++
++		port {
++			basler_ep_0: endpoint {
++				data-lanes = <1 2 3 4>;
++				clock-lanes = <0>;
++				link-frequencies = /bits/ 64 <500000000>;
++				remote-endpoint = <&mipi_csi0_ep>;
++			};
++		};
++	};
++};
++
++&mipi_csi_0 {
++	status = "okay";
++
++	port@0 {
++		mipi_csi0_ep: endpoint {
++			remote-endpoint = <&basler_ep_0>;
++			data-lanes = <4>;
++			csis-hs-settle = <16>;
++		};
++	};
++};
++
++&cameradev {
++        status = "okay";
++};
++
++&isi_0 {
++	status = "okay";
++	fsl,chain_buf;
++};
++
++&isi_1 {
++	status = "disabled";
++	fsl,chain_buf;
++};
++
++&isp_0 {
++	status = "disabled";
++};
++
++&isp_1 {
++	status = "disabled";
++};
++
++&dewarp {
++	status = "disabled";
++};
++
++&gpio1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_basler>;
++
++	cam_pwr_hog {
++		gpio-hog;
++		gpios = <8 0>;
++		output-high;
++		line-name = "basler_cam_pwr";
++	};
++};
++
++&iomuxc {
++	pinctrl_basler: baslergrp {
++		fsl,pins = <
++			MX8MP_IOMUXC_GPIO1_IO08__GPIO1_IO08	0x19
++		>;
++	};
++};
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp-var-som-symphony-basler-isp0.dts b/arch/arm64/boot/dts/freescale/imx8mp-var-som-symphony-basler-isp0.dts
+new file mode 100644
+index 000000000000..9f18c4f18c2f
+--- /dev/null
++++ b/arch/arm64/boot/dts/freescale/imx8mp-var-som-symphony-basler-isp0.dts
+@@ -0,0 +1,90 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright 2019 NXP
++ * Copyright 2020-2021 Variscite Ltd.
++ */
++
++#include "imx8mp-var-som-symphony.dts"
++
++/ {
++	model = "Variscite VAR-SOM-MX8M-PLUS on Symphony-Board with Basler camera on ISP0";
++};
++
++&i2c3 {
++	/delete-node/ov5640_mipi@3c;
++
++	basler_camera_vvcam@36 {
++		compatible = "basler,basler-camera-vvcam", "basler-camera-vvcam";
++		reg = <0x36>;
++		csi_id = <0x00>;
++		status = "okay";
++
++		port {
++			basler_ep_0: endpoint {
++				data-lanes = <1 2 3 4>;
++				clock-lanes = <0>;
++				link-frequencies = /bits/ 64 <750000000>;
++				max-lane-frequency = /bits/ 64 <750000000>;
++				max-pixel-frequency = /bits/ 64 <500000000>;
++				max-data-rate = /bits/ 64 <0>;
++				remote-endpoint = <&mipi_csi0_ep>;
++			};
++		};
++	};
++};
++
++&mipi_csi_0 {
++	status = "okay";
++
++	port@0 {
++		mipi_csi0_ep: endpoint {
++			remote-endpoint = <&basler_ep_0>;
++			data-lanes = <4>;
++			csis-hs-settle = <16>;
++		};
++	};
++};
++
++&cameradev {
++        status = "okay";
++};
++
++&isi_0 {
++	status = "disabled";
++};
++
++&isi_1 {
++	status = "disabled";
++};
++
++&isp_0 {
++	status = "okay";
++};
++
++&isp_1 {
++	status = "disabled";
++};
++
++&dewarp {
++	status = "okay";
++};
++
++&gpio1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_basler>;
++
++	cam_pwr_hog {
++		gpio-hog;
++		gpios = <8 0>;
++		output-high;
++		line-name = "basler_cam_pwr";
++	};
++};
++
++&iomuxc {
++	pinctrl_basler: baslergrp {
++		fsl,pins = <
++			MX8MP_IOMUXC_GPIO1_IO08__GPIO1_IO08	0x19
++		>;
++	};
++};
+-- 
+2.17.1
+
