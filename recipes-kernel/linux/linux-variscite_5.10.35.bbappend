@@ -31,3 +31,23 @@ SRC_URI_append = "\
     file://0027-LF-2670-03-media-csi-disable-gate-clock-for-csi-by-d.patch  \
 "
 
+# Override/extend machine configurations
+
+# imx8mp-var-dart
+KERNEL_DEVICETREE_append_imx8mp-var-dart = " \
+	freescale/imx8mp-var-dart-dt8mcustomboard-basler-isi0.dtb \
+	freescale/imx8mp-var-dart-dt8mcustomboard-legacy-basler-isi0.dtb \
+	freescale/imx8mp-var-som-symphony-basler-isi0.dtb \
+"
+
+# imx8mp-var-dart make added devicetree default
+pkg_postinst_kernel-devicetree_append_imx8mp-var-dart () {
+        cd $D/boot
+        mv imx8mp-var-dart-dt8mcustomboard.dtb imx8mp-var-dart-dt8mcustomboard-ov5640.dtb
+        ln -fs imx8mp-var-dart-dt8mcustomboard-basler-isi0.dtb imx8mp-var-dart-dt8mcustomboard.dtb
+        mv imx8mp-var-dart-dt8mcustomboard-legacy.dtb imx8mp-var-dart-dt8mcustomboard-legacy-ov5640.dtb
+        ln -fs imx8mp-var-dart-dt8mcustomboard-legacy-basler-isi0.dtb imx8mp-var-dart-dt8mcustomboard-legacy.dtb
+        mv imx8mp-var-som-symphony.dtb imx8mp-var-som-symphony-ov5640.dtb
+        ln -fs imx8mp-var-som-symphony-basler-isi0.dtb imx8mp-var-som-symphony.dtb
+}
+
