@@ -23,12 +23,6 @@ SRC_URI_append = "\
     file://0019-Merged-PR-9974-Added-highspeed-device-tree-for-imx8m.patch  \
     file://0020-media-mxc-change-mx6s_fmt.bpp-to-bits-per-pixel.patch  \
     file://0021-media-mxc-add-support-for-YUV420-NV12.patch  \
-    file://0022-Add-basler-camera-on-CSI1-via-ISI1.patch  \
-    file://0023-Add-basler-camera-on-CSI0-via-ISI0-chained.patch  \
-    file://0024-imx8mp-isi-add-dual-isi-dtb.-fix-max-link-frequencie.patch  \
-    file://0025-LF-2670-01-arm64-dts-add-sensor-clock-for-isp.patch  \
-    file://0026-LF-2670-02-media-isi-core-disable-gate-clock-for-isi.patch  \
-    file://0027-LF-2670-03-media-csi-disable-gate-clock-for-csi-by-d.patch  \
 "
 
 # Override/extend machine configurations
