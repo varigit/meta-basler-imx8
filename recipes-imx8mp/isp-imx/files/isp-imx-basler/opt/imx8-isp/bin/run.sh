@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Start the isp_media_server with detection info
 # (c) NXP 2020

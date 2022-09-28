@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 # copyright Basler AG (2021)
 # this script will detect Basler dart MIPI cameras on i.MX8M Plus
