@@ -1,5 +1,8 @@
 require linux-imx_5.15.inc
 FILESEXTRAPATHS:prepend:imx8mm-var-dart := "${THISDIR}/linux-fslc:"
+SRC_URI:append:imx8mm-var-dart = "\
+    file://0030-imx8mm-var-dart-Add-Basler-camera-support.patch \
+"
 
 # imx8mp-var-dart make added devicetree default
 pkg_postinst:kernel-devicetree:append:imx8mp-var-dart () {
