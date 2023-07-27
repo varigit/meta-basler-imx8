@@ -1,4 +1,5 @@
 require linux-imx_5.15.inc
+FILESEXTRAPATHS:prepend:imx8mm-var-dart := "${THISDIR}/linux-fslc:"
 
 # imx8mp-var-dart make added devicetree default
 pkg_postinst:kernel-devicetree:append:imx8mp-var-dart () {
